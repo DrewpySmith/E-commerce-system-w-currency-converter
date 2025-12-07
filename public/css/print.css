@@ -1,0 +1,7 @@
+/* Print-friendly styles for admin pages */
+@page { size: A4; margin: 12mm; }
+body { color: #000; }
+.no-print { display: none !important; }
+.table, table { page-break-inside: auto; }
+tr { page-break-inside: avoid; page-break-after: auto; }
+.card { box-shadow: none !important; }
