@@ -1,60 +1,78 @@
-# CodeIgniter 4 Framework
+# E-commerce System (CodeIgniter 4)
 
-## What is CodeIgniter?
+This project is a simple E-commerce app with:
+- Product catalog with currency conversion (via ExchangeRate API)
+- User authentication (register, login, logout)
+- Cart and checkout (creates orders & order items)
+- Admin panel (Employees CRUD, Products CRUD, Sales Dashboard with charts)
+- Print-ready admin pages (buttons + stylesheet)
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](https://codeigniter.com).
+## Prerequisites
+- PHP 8.1+
+- MySQL/MariaDB
+- Composer
+- Optional: Node not required
 
-This repository holds the distributable version of the framework.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## 1) Install dependencies
+```
+composer install
+```
 
-More information about the plans for version 4 can be found in [CodeIgniter 4](https://forum.codeigniter.com/forumdisplay.php?fid=28) on the forums.
+## 2) Configure environment
+Copy `.env` example if needed and configure DB credentials:
+```
+cp .env.example .env   # If applicable
+```
+Edit `.env`:
+```
+database.default.hostname = localhost
+database.default.database = your_db_name
+database.default.username = your_user
+database.default.password = your_pass
+database.default.DBDriver = MySQLi
+```
 
-You can read the [user guide](https://codeigniter.com/user_guide/)
-corresponding to the latest version of the framework.
+## 3) Create database tables
+Run migrations (employees, orders, order_items, etc.):
+```
+php spark migrate
+```
 
-## Important Change with index.php
+(Optional) Seed an admin user:
+```
+php spark db:seed AdminUserSeeder
+```
+Credentials (change in seeder if needed):
+- email: admin@example.com
+- password: admin123
+- role: admin
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+## 4) Serve the app
+Option A: CI dev server
+```
+php spark serve
+```
+Open: http://localhost:8080
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+Option B: XAMPP/Apache
+Point DocumentRoot to the `public/` directory or access with `/public`:
+- http://localhost/E-commerce/public
 
-**Please** read the user guide for a better explanation of how CI4 works!
+## 5) Key URLs
+- Storefront: `/` (catalog)
+- Cart: `/cart`
+- Checkout: `/checkout`
+- Login: `/login` / Register: `/register`
+- Admin Dashboard: `/admin`
+- Admin Employees: `/admin/employees`
+- Admin Products: `/admin/products`
 
-## Repository Management
+## Notes
+- Admin pages include Print buttons and a print stylesheet at `public/css/print.css`.
+- Currency conversion uses `https://api.exchangerate-api.com/v4/latest/USD`.
+- Orders are created via checkout (status `paid`), and the dashboard aggregates real data by day.
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
-
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
-
-## Contributing
-
-We welcome contributions from the community.
-
-Please read the [*Contributing to CodeIgniter*](https://github.com/codeigniter4/CodeIgniter4/blob/develop/CONTRIBUTING.md) section in the development repository.
-
-## Server Requirements
-
-PHP version 8.1 or higher is required, with the following extensions installed:
-
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-
-> [!WARNING]
-> - The end of life date for PHP 7.4 was November 28, 2022.
-> - The end of life date for PHP 8.0 was November 26, 2023.
-> - If you are still using PHP 7.4 or 8.0, you should upgrade immediately.
-> - The end of life date for PHP 8.1 will be December 31, 2025.
-
-Additionally, make sure that the following extensions are enabled in your PHP:
-
-- json (enabled by default - don't turn it off)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php) if you plan to use MySQL
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+## Troubleshooting
+- If `/admin` 404s, ensure routes include either a group empty-path or an explicit `/admin` mapping.
+- If using Apache without vhost, include `/public` in URLs or change DocumentRoot.
+- Run `php spark routes` to inspect registered routes.
